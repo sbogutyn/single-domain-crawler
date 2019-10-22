@@ -21,6 +21,7 @@ dependencies {
     compile("org.apache.logging.log4j","log4j-core","2.12.1")
     compile("com.fasterxml.jackson.dataformat", "jackson-dataformat-yaml", "2.9.8")
     compile("com.fasterxml.jackson.core", "jackson-databind", "2.9.8")
+    compile("io.mola.galimatias", "galimatias", "0.2.1")
 
     implementation("org.jsoup","jsoup","1.12.1")
 

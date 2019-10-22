@@ -1,11 +1,14 @@
 package com.sbogutyn.crawler;
 
 
+import com.sbogutyn.crawler.classifier.LinkClassificationGroups;
+import com.sbogutyn.crawler.classifier.LinkClassifier;
 import com.sbogutyn.crawler.client.HttpClient;
 import com.sbogutyn.crawler.client.jsoup.JsoupHttpClient;
 import com.sbogutyn.crawler.domain.Link;
 import com.sbogutyn.crawler.parser.HtmlParser;
 import com.sbogutyn.crawler.parser.jsoup.JsoupParser;
+import com.sbogutyn.crawler.util.LinkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +32,10 @@ public class Main {
       HtmlParser parser = new JsoupParser(TEST_URL);
       Set<Link> links = parser.parse(html.get());
       links.forEach(l -> log.info("Extracted link: {}", l));
+
+      LinkClassifier linkClassifier = LinkUtil.findDomain(TEST_URL).map(LinkClassifier::new).orElseThrow();
+      LinkClassificationGroups linkClassificationGroups = linkClassifier.classifyAll(links);
+      log.info("Classified links into:\n {}", linkClassificationGroups);
     } else {
       log.error("Error fetching {}", link.getUrl());
     }
