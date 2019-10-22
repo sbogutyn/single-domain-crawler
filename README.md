@@ -5,7 +5,7 @@
   </a>
 </p>
 
-> Simple crawler limited to one domain and producing as output xml document with links categorized into: internal, external and static content.
+> Simple com.sbogutyn.crawler limited to one domain and producing as output xml document with links categorized into: internal, external and static content.
 
 ## Install
 
@@ -15,7 +15,7 @@
 
 Or build a docker image:
 ```sh
-docker build -t sbogutyn/crawler .
+docker build -t sbogutyn/com.sbogutyn.crawler .
 ```
 
 ## Usage
@@ -27,7 +27,7 @@ docker build -t sbogutyn/crawler .
 Or using docker:
 
 ```sh
-docker run --rm -it sbogutyn/crawler
+docker run --rm -it sbogutyn/com.sbogutyn.crawler
 ```
 
 ## Run tests
