@@ -8,7 +8,7 @@ group = "com.sbogutyn"
 version = "1.0-SNAPSHOT"
 
 application {
-    mainClassName = "com.sbogutyn.com.sbogutyn.crawler.Main"
+    mainClassName = "com.sbogutyn.crawler.Main"
 }
 
 repositories {
