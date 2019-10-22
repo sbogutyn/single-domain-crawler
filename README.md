@@ -5,7 +5,7 @@
   </a>
 </p>
 
-> Simple crawler limited to one domain and producing as ouput xml document with links categorized into: internal, external and static content.
+> Simple crawler limited to one domain and producing as output xml document with links categorized into: internal, external and static content.
 
 ## Install
 
@@ -13,10 +13,21 @@
 ./gradlew build
 ```
 
+Or build a docker image:
+```sh
+docker build -t sbogutyn/crawler .
+```
+
 ## Usage
 
 ```sh
 ./gradlew run
+```
+
+Or using docker:
+
+```sh
+docker run --rm -it sbogutyn/crawler
 ```
 
 ## Run tests
