@@ -4,46 +4,53 @@ import java.util.*;
 
 public class Page {
   private final Link rootAddress;
-  private final Map<Link, Set<Link>> internalPages;
+  private final Set<Link> internalLinks;
   private final Set<Link> externalLinks;
+  private final Set<Link> staticContentLinks;
 
-  public Page(Link rootAddress, Map<Link, Set<Link>> internalPages, Set<Link> externalLinks) {
+  public Page(Link rootAddress, Set<Link> internalLinks, Set<Link> externalLinks, Set<Link> staticContentLinks) {
     this.rootAddress = rootAddress;
-    this.internalPages = internalPages;
+    this.internalLinks = internalLinks;
     this.externalLinks = externalLinks;
-  }
-
-  public Page(Link rootAddress) {
-    this.rootAddress = rootAddress;
-    this.internalPages = new HashMap<>();
-    this.externalLinks = new HashSet<>();
+    this.staticContentLinks = staticContentLinks;
   }
 
   public Link getRootAddress() {
     return rootAddress;
   }
 
-  public Map<Link, Set<Link>> getInternalPages() {
-    return internalPages;
+  public Set<Link> getInternalLinks() {
+    return internalLinks;
   }
 
   public Set<Link> getExternalLinks() {
     return externalLinks;
   }
 
-  public Set<Link> getLinksForInternalPage(Link key) {
-    return internalPages.get(key);
+  public Set<Link> getStaticContentLinks() {
+    return staticContentLinks;
   }
 
-  public void addInternalPage(Link key, Set<Link> value) {
-    internalPages.put(key, value);
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Page page = (Page) o;
+    return rootAddress.equals(page.rootAddress);
   }
 
-  public boolean addExternalLink(Link link) {
-    return externalLinks.add(link);
+  @Override
+  public int hashCode() {
+    return Objects.hash(rootAddress);
   }
 
-  public boolean addAllExternalLinks(Collection<Link> c) {
-    return externalLinks.addAll(c);
+  @Override
+  public String toString() {
+    return "Page{" +
+            "rootAddress=" + rootAddress +
+            ", internalLinks=" + internalLinks +
+            ", externalLinks=" + externalLinks +
+            ", staticContentLinks=" + staticContentLinks +
+            '}';
   }
 }
