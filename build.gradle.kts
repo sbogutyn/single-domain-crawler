@@ -23,6 +23,7 @@ dependencies {
     compile("com.fasterxml.jackson.core", "jackson-databind", "2.9.8")
     compile("io.mola.galimatias", "galimatias", "0.2.1")
     compile("com.fasterxml.jackson.dataformat", "jackson-dataformat-xml", "2.10.0")
+    implementation("com.beust", "jcommander", "1.78")
 
     implementation("org.jsoup","jsoup","1.12.1")
 

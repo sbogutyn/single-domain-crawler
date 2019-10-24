@@ -8,7 +8,7 @@ import io.mola.galimatias.GalimatiasParseException;
 import io.mola.galimatias.URL;
 
 public class CrawlerFactory {
-  public static Crawler crawler(CrawlerType crawlerType, String baseUrl) {
+  public static Crawler crawler(CrawlerType crawlerType, String baseUrl, CrawlLimit crawlLimit) {
     try {
       String resolvedBaseUrl = URL.parse(baseUrl).resolve("/").toString();
 
@@ -16,7 +16,8 @@ public class CrawlerFactory {
         return new SimpleCrawler(new JsoupHttpClient(),
                 new JsoupParser(resolvedBaseUrl),
                 new LinkClassifier(resolvedBaseUrl),
-                new InMemoryLinksDb());
+                new InMemoryLinksDb(),
+                crawlLimit);
       }
       throw new CrawlingException("Unsupported crawler exception: " + crawlerType);
     } catch (GalimatiasParseException e) {

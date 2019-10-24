@@ -31,21 +31,37 @@
 ./gradlew build
 ```
 
-Or build a docker image:
+> Or build a docker image:
 ```sh
 docker build -t sbogutyn/crawler .
 ```
 
 ## Usage
 
-```sh
-./gradlew run
+> Crawler accepts following command line arguments:
+
+```text
+Usage: <main class> [options]
+  Options:
+    --crawlLimit, -l
+      Maximum number of links to crawl.
+    --help, -h
+
+    --startingUrl, -s
+      Base url to start the crawling process.
+      Default: http://example.com
 ```
 
-Or using docker:
+> Can be start directly by running Main class, using gradle by:
 
 ```sh
-docker run --rm -it sbogutyn/crawler
+./gradlew run --args="-l 10 -s http://example.com"
+```
+
+> Or using docker:
+
+```sh
+docker run --rm sbogutyn/crawler -l 10 -s http://example.com
 ```
 
 ## Run tests

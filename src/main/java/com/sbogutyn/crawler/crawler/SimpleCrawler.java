@@ -24,27 +24,33 @@ public class SimpleCrawler implements Crawler {
   private final HtmlParser htmlParser;
   private final LinkClassifier linkClassifier;
   private final LinksDb linksDb;
+  private final CrawlLimit crawlLimit;
   private final AtomicLong crawlCount = new AtomicLong(0);
-  private static final long CRAWL_LIMIT = 10L;
 
   SimpleCrawler(HttpClient httpClient,
                 HtmlParser htmlParser,
                 LinkClassifier linkClassifier,
-                LinksDb linksDb) {
+                LinksDb linksDb,
+                CrawlLimit crawlLimit) {
     this.httpClient = httpClient;
     this.htmlParser = htmlParser;
     this.linkClassifier = linkClassifier;
     this.linksDb = linksDb;
+    this.crawlLimit = crawlLimit;
   }
 
   public CrawlResults crawlSite(String baseUrl) {
+    if (!crawlLimit.isLimitCrawling()) {
+      log.warn("Limit for crawled links is not set, crawling all internal links for: {}", baseUrl);
+    }
+
     try {
       URL url = URL.parse(baseUrl);
       log.info("Parsed seed url: {}", url.toHumanString());
       Link rootLink = new Link(url.toString());
       linksDb.addToPendingLinks(rootLink);
 
-      while (!linksDb.isPendingLinksQueueEmpty() && crawlCount.longValue() < CRAWL_LIMIT) {
+      while (checkIfCrawlingShouldContinue()) {
         Link link = linksDb.takeLinkFromQueue();
         crawlLink(link);
       }
@@ -52,6 +58,17 @@ public class SimpleCrawler implements Crawler {
       return new CrawlResults(rootLink, linksDb.getAllPages());
     } catch (GalimatiasParseException e) {
       throw new CrawlingException("Couldn't crawl url: " + baseUrl, e);
+    }
+  }
+
+  private boolean checkIfCrawlingShouldContinue() {
+    boolean queueNotEmpty = !linksDb.isPendingLinksQueueEmpty();
+
+    if (crawlLimit.isLimitCrawling()) {
+      boolean underCrawlLimit = crawlCount.longValue() < crawlLimit.getCrawledLinksLimit();
+      return queueNotEmpty && underCrawlLimit;
+    } else {
+      return queueNotEmpty;
     }
   }
 
@@ -66,6 +83,12 @@ public class SimpleCrawler implements Crawler {
             linkClassificationGroups.getExternalLinks().size(),
             linkClassificationGroups.getStaticContentLinks().size());
 
+    Page page = new Page(link,
+            linkClassificationGroups.getInternalLinks(),
+            linkClassificationGroups.getExternalLinks(),
+            linkClassificationGroups.getStaticContentLinks());
+
+    linksDb.addPage(page);
 
     for (Link currentLink : linkClassificationGroups.getInternalLinks()) {
       if (!linksDb.isLinkAlreadyIndexed(currentLink)) {
@@ -75,12 +98,7 @@ public class SimpleCrawler implements Crawler {
       }
     }
 
-    Page page = new Page(link,
-            linkClassificationGroups.getInternalLinks(),
-            linkClassificationGroups.getExternalLinks(),
-            linkClassificationGroups.getStaticContentLinks());
 
-    linksDb.addPage(page);
 
     log.info("Crawled {} links", crawlCount.incrementAndGet());
   }
