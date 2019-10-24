@@ -24,4 +24,14 @@ public class LinkUtil {
       return Optional.empty();
     }
   }
+
+  public static Optional<String> findPath(String url) {
+    try {
+      URL parsedUrl = URL.parse(url);
+      return Optional.of(parsedUrl.path());
+    } catch (GalimatiasParseException e) {
+      log.error("Couldn't find domain in {}", url, e);
+      return Optional.empty();
+    }
+  }
 }

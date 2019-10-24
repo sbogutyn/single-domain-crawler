@@ -72,7 +72,10 @@ docker run --rm sbogutyn/crawler -l 10 -s http://example.com
 
 ## TODO
 
-- [ ] Classifying links with static content
+- [X] Classifying links with static content
+- [ ] Adding external configuration (for setting timeouts etc.)
+- [ ] Improve classification by handling different Content-Types instead of relying on extension
+- [ ] Handling sub domains 
 
 ## Ideas for future extension
 

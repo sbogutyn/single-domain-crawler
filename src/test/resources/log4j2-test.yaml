@@ -9,6 +9,13 @@ Configuration:
       PatternLayout:
         Pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
   Loggers:
+    logger:
+      - name: org.mockserver
+        level: error
+        additivity: false
+        AppenderRef:
+          - ref: STDOUT
+
     Root:
       level: info
       AppenderRef:
