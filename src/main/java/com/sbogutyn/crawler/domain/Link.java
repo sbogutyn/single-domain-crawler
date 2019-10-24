@@ -1,9 +1,12 @@
 package com.sbogutyn.crawler.domain;
 
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
 import java.util.Objects;
 
 public class Link {
+  @JacksonXmlText
   private final String url;
 
   public Link(String url) {

@@ -1,11 +1,24 @@
 package com.sbogutyn.crawler.domain;
 
-import java.util.*;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import java.util.Objects;
+import java.util.Set;
 
 public class Page {
   private final Link rootAddress;
+
+  @JacksonXmlElementWrapper(localName = "internalLinks")
+  @JacksonXmlProperty(localName = "internalLink")
   private final Set<Link> internalLinks;
+
+  @JacksonXmlElementWrapper(localName = "externalLinks")
+  @JacksonXmlProperty(localName = "externalLink")
   private final Set<Link> externalLinks;
+
+  @JacksonXmlElementWrapper(localName = "staticContentLinks")
+  @JacksonXmlProperty(localName = "staticContentLink")
   private final Set<Link> staticContentLinks;
 
   public Page(Link rootAddress, Set<Link> internalLinks, Set<Link> externalLinks, Set<Link> staticContentLinks) {
@@ -53,4 +66,5 @@ public class Page {
             ", staticContentLinks=" + staticContentLinks +
             '}';
   }
+
 }

@@ -1,16 +1,13 @@
 package com.sbogutyn.crawler;
 
-
-import com.sbogutyn.crawler.classifier.LinkClassifier;
-import com.sbogutyn.crawler.client.jsoup.JsoupHttpClient;
 import com.sbogutyn.crawler.crawler.Crawler;
-import com.sbogutyn.crawler.crawler.SimpleCrawler;
-import com.sbogutyn.crawler.db.InMemoryLinksDb;
-import com.sbogutyn.crawler.parser.jsoup.JsoupParser;
+import com.sbogutyn.crawler.crawler.CrawlerFactory;
+import com.sbogutyn.crawler.domain.CrawlResults;
+import com.sbogutyn.crawler.serializer.CrawlResultsSerializer;
+import com.sbogutyn.crawler.serializer.XmlCrawlResultsSerializer;
 import com.sbogutyn.crawler.util.LinkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class Main {
   private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -19,12 +16,9 @@ public class Main {
   public static void main(String[] args) {
     String baseDomain = LinkUtil.findDomain(TEST_URL).get();
     log.info("Crawling page: {} in domain: {}", TEST_URL, baseDomain);
-    Crawler crawler = new SimpleCrawler(
-            new JsoupHttpClient(),
-            new JsoupParser(baseDomain),
-            new LinkClassifier(baseDomain),
-            new InMemoryLinksDb()
-    );
-    crawler.crawlSite(TEST_URL);
+    Crawler crawler = CrawlerFactory.crawler(CrawlerFactory.CrawlerType.JSOUP, TEST_URL);
+    CrawlResults crawlResults = crawler.crawlSite(TEST_URL);
+    CrawlResultsSerializer<String> crawlResultsSerializer = new XmlCrawlResultsSerializer();
+    log.info("Crawl results: \n {}", crawlResultsSerializer.serialize(crawlResults));
   }
 }

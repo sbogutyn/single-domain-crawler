@@ -4,6 +4,7 @@ import com.sbogutyn.crawler.classifier.LinkClassificationGroups;
 import com.sbogutyn.crawler.classifier.LinkClassifier;
 import com.sbogutyn.crawler.client.HttpClient;
 import com.sbogutyn.crawler.db.LinksDb;
+import com.sbogutyn.crawler.domain.CrawlResults;
 import com.sbogutyn.crawler.domain.Link;
 import com.sbogutyn.crawler.domain.Page;
 import com.sbogutyn.crawler.parser.HtmlParser;
@@ -26,7 +27,7 @@ public class SimpleCrawler implements Crawler {
   private final AtomicLong crawlCount = new AtomicLong(0);
   private static final long CRAWL_LIMIT = 10L;
 
-  public SimpleCrawler(HttpClient httpClient,
+  SimpleCrawler(HttpClient httpClient,
                 HtmlParser htmlParser,
                 LinkClassifier linkClassifier,
                 LinksDb linksDb) {
@@ -36,7 +37,7 @@ public class SimpleCrawler implements Crawler {
     this.linksDb = linksDb;
   }
 
-  public void crawlSite(String baseUrl) {
+  public CrawlResults crawlSite(String baseUrl) {
     try {
       URL url = URL.parse(baseUrl);
       log.info("Parsed seed url: {}", url.toHumanString());
@@ -48,11 +49,7 @@ public class SimpleCrawler implements Crawler {
         crawlLink(link);
       }
 
-      log.info("Crawling finished");
-      log.info("Results");
-
-      linksDb.getAllPages().forEach(p -> log.info("Page: {}", p));
-
+      return new CrawlResults(rootLink, linksDb.getAllPages());
     } catch (GalimatiasParseException e) {
       throw new CrawlingException("Couldn't crawl url: " + baseUrl, e);
     }

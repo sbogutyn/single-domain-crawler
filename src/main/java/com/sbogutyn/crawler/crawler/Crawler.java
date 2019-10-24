@@ -1,6 +1,8 @@
 package com.sbogutyn.crawler.crawler;
 
 
+import com.sbogutyn.crawler.domain.CrawlResults;
+
 public interface Crawler {
-  void crawlSite(String baseUrl);
+  CrawlResults crawlSite(String baseUrl);
 }
