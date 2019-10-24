@@ -26,6 +26,9 @@
 ```
 
 ## Install
+> This project requires jdk 12 for building. Jdk 13 doesn't work because it's not 
+> supported by current gradle version. I've added docker image based on openjdk-12 that 
+> is able to both build and run this project.
 
 ```sh
 ./gradlew build
@@ -70,12 +73,29 @@ docker run --rm sbogutyn/crawler -l 10 -s http://example.com
 ./gradlew test
 ```
 
-## TODO
+## Reasoning 
+> This implementation uses Jsoup for both http client and parsing html.
+> After given page is parsed, all links are extracted and classified into 3 categories:
+> internal, external and static content.
+> Results are kept in memory. For this I've used set of already processed links
+> to ensure no duplicates and queue for pending links. Only internal links 
+> are added to queue.
+> Crawling can continue until all links in given domain are processed (pending queue is empty)
+> or until we reach limit of crawled links which can be provided as optional command line argument.
+> Finally xml document representing all crawled pages is produced using jackson-databind-xml.
+> All pages are on the same level without nesting between parent/child pages.
 
-- [X] Classifying links with static content
-- [ ] Adding external configuration (for setting timeouts etc.)
-- [ ] Improve classification by handling different Content-Types instead of relying on extension
-- [ ] Handling sub domains 
+# Trade offs
+> It is single threaded as solution aimed to be simple, but performance could be greatly improved by
+> making it parallel. 
+> Handling of static content links is very basic due to time constraints on implementation,
+> could be improved by using content type of response. 
+> Because it is using simple http client and html parser it doesn't work with dynamic pages created mostly,
+> with javascript. For this kind of pages it would be better to use WebDriver implementation, but that would 
+> make crawling process slower.
+> In current form it is also not scalable, that could be achieved by using external queue and distributing 
+> links to multiple workers but that also introduces more complexity. 
+
 
 ## Ideas for future extension
 
@@ -87,6 +107,9 @@ docker run --rm sbogutyn/crawler -l 10 -s http://example.com
 - [ ] Providing multiple starting links from different domains
 - [ ] Index results in full text search engine like elastic-search
 - [ ] Handling dynamic pages by using WebDriver
+- [ ] Adding external configuration (for setting timeouts etc.)
+- [ ] Improve classification by handling different Content-Types instead of relying on extension
+- [ ] Handling sub domains 
 
 ## Author
 
