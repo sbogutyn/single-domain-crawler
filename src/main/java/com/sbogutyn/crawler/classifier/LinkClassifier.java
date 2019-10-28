@@ -57,7 +57,6 @@ public class LinkClassifier {
                   "|otf" +
                   "|png" +
                   "|pdf" +
-                  "|php" +
                   "|ppt" +
                   "|pptx" +
                   "|rar" +
