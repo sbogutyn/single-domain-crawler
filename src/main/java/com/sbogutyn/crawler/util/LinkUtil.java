@@ -28,7 +28,7 @@ public class LinkUtil {
   public static Optional<String> findPath(String url) {
     try {
       URL parsedUrl = URL.parse(url);
-      return Optional.of(parsedUrl.path());
+      return Optional.ofNullable(parsedUrl.path());
     } catch (GalimatiasParseException e) {
       log.error("Couldn't find domain in {}", url, e);
       return Optional.empty();

@@ -2,6 +2,8 @@ package com.sbogutyn.crawler.classifier;
 
 import com.sbogutyn.crawler.domain.Link;
 import com.sbogutyn.crawler.util.LinkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class LinkClassifier {
+  private static final Logger log = LoggerFactory.getLogger(LinkClassifier.class);
   private final String baseDomain;
   private final Pattern staticContentPattern =
           Pattern.compile("^.+\\.(aac" +
@@ -92,12 +95,15 @@ public class LinkClassifier {
   }
 
   private LinkClassification classify(Link link) {
+    log.trace("Classifying link: {}", link.getUrl());
     if (isStaticContent(link)) {
       return LinkClassification.STATIC_CONTENT;
     } else if (isInTheSameDomain(link)) {
       return LinkClassification.INTERNAL;
-    } else {
+    } else if (canFindDomainForLink(link)) {
       return LinkClassification.EXTERNAL;
+    } else {
+      return LinkClassification.OTHER;
     }
   }
 
@@ -106,6 +112,10 @@ public class LinkClassifier {
             .map(staticContentPattern::matcher)
             .map(Matcher::matches)
             .orElse(false);
+  }
+
+  private boolean canFindDomainForLink(Link link) {
+    return LinkUtil.findDomain(link.getUrl()).isPresent();
   }
 
   private boolean isInTheSameDomain(Link link) {

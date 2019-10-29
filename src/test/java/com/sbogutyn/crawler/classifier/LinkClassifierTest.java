@@ -74,4 +74,16 @@ class LinkClassifierTest {
             ));
   }
 
+  @Test
+  void shouldNotFailOnMailtoLinks() {
+    //given
+    LinkClassifier linkClassifier = new LinkClassifier(BASE_DOMAIN);
+    //when
+    LinkClassificationGroups result = linkClassifier.classifyAll(
+            Set.of(
+                    new Link("mailto:test@email.com")));
+    //then
+    assertThat(result).isEqualToComparingFieldByFieldRecursively(new LinkClassificationGroups(Set.of(), Set.of(), Set.of()));
+  }
+
 }
