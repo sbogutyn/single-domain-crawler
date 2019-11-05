@@ -8,12 +8,14 @@ import com.sbogutyn.crawler.domain.CrawlResults;
 import com.sbogutyn.crawler.domain.Link;
 import com.sbogutyn.crawler.domain.Page;
 import com.sbogutyn.crawler.parser.HtmlParser;
+import com.sbogutyn.crawler.util.LinkUtil;
 import io.mola.galimatias.GalimatiasParseException;
 import io.mola.galimatias.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -106,7 +108,11 @@ public class SimpleCrawler implements Crawler {
   private Set<Link> parsePageAndGetLinks(Link link) {
     return httpClient.getHtml(link).stream()
             .map(htmlParser::parse)
-            .flatMap(Collection::stream).collect(Collectors.toSet());
+            .flatMap(Collection::stream)
+            .map(currentLink -> LinkUtil.normalizeUrl(currentLink.getUrl()))
+            .flatMap(Optional::stream)
+            .map(Link::new)
+            .collect(Collectors.toSet());
   }
 
 

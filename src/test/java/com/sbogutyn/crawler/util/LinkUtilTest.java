@@ -49,4 +49,27 @@ class LinkUtilTest {
     //then
     assertThat(result).isEmpty();
   }
+
+  @Test
+  void shouldRemoveLinkFragments() {
+    //given
+    String link = "http://example.com/page#some-element";
+    //when
+    Optional<String> result = LinkUtil.withoutFragment(link);
+    //then
+    assertThat(result).isNotEmpty();
+    assertThat(result).get().isEqualTo("http://example.com/page");
+  }
+
+
+  @Test
+  void shouldRemoveTrailingSlash() {
+    //given
+    String link = "http://example.com/page/";
+    //when
+    String result = LinkUtil.withoutTrailingSlash(link);
+    //then
+    assertThat(result).isNotEmpty();
+    assertThat(result).isEqualTo("http://example.com/page");
+  }
 }

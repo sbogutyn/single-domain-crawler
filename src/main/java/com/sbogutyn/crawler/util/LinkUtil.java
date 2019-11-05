@@ -34,4 +34,30 @@ public class LinkUtil {
       return Optional.empty();
     }
   }
+
+  public static Optional<String> withoutFragment(String url) {
+    try {
+      URL parsedUrl = URL.parse(url);
+      if (parsedUrl.fragment() != null) {
+        parsedUrl = parsedUrl.withFragment(null);
+      }
+      return Optional.ofNullable(parsedUrl).map(URL::toString);
+    } catch (GalimatiasParseException e) {
+      return Optional.empty();
+    }
+  }
+
+  public static String withoutTrailingSlash(String url) {
+    if (url.endsWith("/")) {
+      return url.substring(0, url.length() - 1);
+    } else {
+      return url;
+    }
+  }
+
+  public static Optional<String> normalizeUrl(String url) {
+    return Optional.ofNullable(url)
+            .flatMap(LinkUtil::withoutFragment)
+            .map(LinkUtil::withoutTrailingSlash);
+  }
 }
